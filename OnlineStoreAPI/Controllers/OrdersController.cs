@@ -41,7 +41,6 @@ namespace OnlineStoreAPI.Controllers
                 })
                 .ToList();
 
-
             return res;
         }
 
@@ -74,8 +73,29 @@ namespace OnlineStoreAPI.Controllers
 
         // POST api/<OrdersController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] OrderDTO value)
         {
+            int lastId = _context.Orders.ToList().Last().Id + 1;
+
+            Order newOrder = new Order { 
+                Id = lastId,
+                Name = value.Name,
+                Date = value.Date
+            };
+            _context.Orders.Add(newOrder);
+            _context.SaveChanges();
+
+            foreach (var item in value.Products)
+            {
+                var ohp = new Orderproduct
+                {
+                    OrderId = lastId,
+                    ProductId = item.Id
+                };
+
+                _context.Orderproducts.Add(ohp);
+            }
+            _context.SaveChanges();
         }
 
         // PUT api/<OrdersController>/5

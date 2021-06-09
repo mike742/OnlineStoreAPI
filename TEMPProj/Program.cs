@@ -11,22 +11,9 @@ namespace TEMPProj
         {
             var context = new online_storeContext();
 
-            var res = context.Orderproducts
-                .Where(op => op.OrderId == 2)
-                .Select(o => new ProductDTO
-                {
-                    Id = o.Product.Id,
-                    Name = o.Product.Name,
-                    Price = o.Product.Price
-                })
-                .ToArray();
+            int lastId =  context.Orders.ToList().Last().Id;
 
-            foreach (var e in res)
-            {
-                // Console.WriteLine(e.OrderId + " " + e.ProductId);
-                Console.WriteLine(e.Id + " " + e.Name + " " + e.Price);
-            }
-
+            Console.WriteLine("lastId = " + lastId);
 
         }
     }

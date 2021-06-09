@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using OnlineStoreAPI.DBModels;
 using OnlineStoreDTO;
 
@@ -15,9 +16,12 @@ namespace OnlineStoreAPI.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly online_storeContext _context;
+        private readonly ILogger<ProductsController> _logger;
 
-        public ProductsController(online_storeContext context)
+        public ProductsController(online_storeContext context, 
+            ILogger<ProductsController> logger)
         {
+            _logger = logger;
             _context = context;
         }
 
@@ -25,6 +29,8 @@ namespace OnlineStoreAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProducts()
         {
+            // _logger.LogInformation("ProductsController GetProducts invoked!");
+
             return await _context.Products
                 .Select(p => new ProductDTO { 
                     Id = p.Id,
@@ -42,6 +48,7 @@ namespace OnlineStoreAPI.Controllers
 
             if (product == null)
             {
+                _logger.LogError($" product with id {id} is null");
                 return NotFound();
             }
 

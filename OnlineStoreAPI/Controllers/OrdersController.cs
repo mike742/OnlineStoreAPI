@@ -47,9 +47,29 @@ namespace OnlineStoreAPI.Controllers
 
         // GET api/<OrdersController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public OrderDTO Get(int id)
         {
-            return "value";
+            var res = _context.Orders
+                .Where(e => e.Id == id)
+                .Select(o => new OrderDTO
+                {
+                    Id = o.Id,
+                    Name = o.Name,
+                    Date = o.Date,
+                    Products = _context.Orderproducts
+                        .Where(op => op.OrderId == o.Id)
+                        .Select(p => new ProductDTO
+                        {
+                            Id = p.Product.Id,
+                            Name = p.Product.Name,
+                            Price = p.Product.Price
+                        })
+                        .ToList()
+                })
+                .FirstOrDefault();
+
+
+            return res;
         }
 
         // POST api/<OrdersController>

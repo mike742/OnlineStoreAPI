@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineStoreAPI.DBModels;
+using OnlineStoreAPI.ViewModels;
 using OnlineStoreDTO;
 using System;
 using System.Collections.Generic;
@@ -73,7 +74,7 @@ namespace OnlineStoreAPI.Controllers
 
         // POST api/<OrdersController>
         [HttpPost]
-        public void Post([FromBody] OrderDTO value)
+        public void Post([FromBody] OrderVM value)
         {
             int lastId = _context.Orders.ToList().Last().Id + 1;
 
@@ -85,12 +86,12 @@ namespace OnlineStoreAPI.Controllers
             _context.Orders.Add(newOrder);
             _context.SaveChanges();
 
-            foreach (var item in value.Products)
+            foreach (int id in value.ProductIds)
             {
                 var ohp = new Orderproduct
                 {
                     OrderId = lastId,
-                    ProductId = item.Id
+                    ProductId = id
                 };
 
                 _context.Orderproducts.Add(ohp);
@@ -100,14 +101,35 @@ namespace OnlineStoreAPI.Controllers
 
         // PUT api/<OrdersController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void Put(int id, [FromBody] OrderVM value)
         {
+            var orderToUpdate = _context.Orders.Where(o => o.Id == id)
+                                        .FirstOrDefault();
+
+            if (orderToUpdate != null)
+            {
+                orderToUpdate.Name = value.Name;
+                orderToUpdate.Date = value.Date;
+
+                _context.SaveChanges();
+            }
         }
 
         // DELETE api/<OrdersController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            var orderToDelete = _context.Orders.Find(id);
+
+            if (orderToDelete != null)
+            {
+                var produtsRange = 
+                    _context.Orderproducts.Where(ohp => ohp.OrderId == id).ToList();
+                _context.Orderproducts.RemoveRange(produtsRange);
+
+                _context.Orders.Remove(orderToDelete);
+                _context.SaveChanges();
+            }
         }
     }
 }

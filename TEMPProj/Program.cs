@@ -11,10 +11,16 @@ namespace TEMPProj
         {
             var context = new online_storeContext();
 
-            int lastId =  context.Orders.ToList().Last().Id;
+            int id = 8;
+            var orderToDelete = context.Orders.Find(id);
 
-            Console.WriteLine("lastId = " + lastId);
+            var produtsRange =
+                    context.Orderproducts.Where(ohp => ohp.OrderId == id).ToList();
 
+            foreach (var e in produtsRange)
+            {
+                Console.WriteLine( e.OrderId + " " + e.ProductId);
+            }
         }
     }
 }

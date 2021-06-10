@@ -125,6 +125,8 @@ namespace OnlineStoreAPI.Controllers
                 return NotFound();
             }
 
+            // Product !!!!!
+
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
 

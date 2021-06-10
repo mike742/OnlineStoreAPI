@@ -111,6 +111,20 @@ namespace OnlineStoreAPI.Controllers
                 orderToUpdate.Name = value.Name;
                 orderToUpdate.Date = value.Date;
 
+                var listproduct = _context.Orderproducts
+                    .Where(op => op.OrderId == id).ToList();
+
+                _context.Orderproducts.RemoveRange(listproduct);
+
+                foreach (var pi in value.ProductIds)
+                {
+                    Orderproduct op = new Orderproduct
+                    {
+                        ProductId = pi,
+                        OrderId = orderToUpdate.Id
+                    };
+                    _context.Orderproducts.Add(op);
+                }
                 _context.SaveChanges();
             }
         }

@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title> API methods test </title>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"
+            integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU="
+            crossorigin="anonymous"></script>
+</head>
+<body>
+    <h1>API crud</h1>
+    <h3>Load Data</h3>
+
+    <button onclick="loadData()">Load data</button>
+    <p id="result"></p>
+
+    <hr />
+    <h3>Add Data</h3>
+
+    <input id="productName" /> <br />
+    <input id="productPrice" /><br /><br />
+
+    <button onclick="addData()">Add Product</button>
+    <p id="resultAdd"></p>
+
+
+
+    <script>
+
+        const apiUrl = "https://localhost:44352/api/Products";
+
+        function addData() {
+
+            let newProduct = {
+                "Name": $("#productName").val(),
+                "Price": +$("#productPrice").val()
+            };
+            // {"Name":"Test Add from html","Price":"1234.55"}
+            console.log(JSON.stringify(newProduct));
+
+            $.ajax({
+                type: "post",
+                url: apiUrl,
+                data: JSON.stringify(newProduct),
+                contentType: "application/json; charset=utf-8",
+                success: function () {
+                    $("#resultAdd")
+                        .html("<span style='color: green'>Your Product has been added successfully!</span>");
+                },
+                error: function() {
+                    $("#result").html("Something wrong");
+                }
+            });
+        }
+
+        function loadData() {
+
+            $.ajax(
+                {
+                    url: apiUrl,
+                    success: function (data) {
+                        let html = "";
+
+                        $.each(data, function (index, value) {
+                            html += value.id + ": " + value.name + " " + value.price + "<br>";
+                        });
+
+                        $("#result").html(html);
+                    },
+                    error: function () {
+                        $("#result").html("Something wrong");
+                    }
+                }
+            );
+        }
+
+
+        function loadDataJavaScript() {
+
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function () {
+
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("result").innerHTML = this.responseText;
+                }
+            }
+
+            xhttp.open("GET", "https://localhost:44352/api/Orders", true);
+            xhttp.send();
+
+        }
+    </script>
+</body>
+</html>

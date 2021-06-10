@@ -52,6 +52,9 @@ namespace OnlineStoreAPI
             app.UseRouting();
             app.UseAuthorization();
             
+            app.UseStaticFiles();
+            app.UseCors( e => e.WithOrigins("*") );
+
             app.UseSwagger();
             app.UseSwaggerUI(
                 c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Online Store v1"));

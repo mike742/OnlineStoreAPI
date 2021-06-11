@@ -1,175 +1,175 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title> API methods test </title>
-    <script src="https://code.jquery.com/jquery-1.12.4.js"
-            integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU="
-            crossorigin="anonymous"></script>
-</head>
-<body>
-    <h1>API crud</h1>
-    <h3>Load Data</h3>
+﻿    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8" />
+        <title> API methods test </title>
+        <script src="https://code.jquery.com/jquery-1.12.4.js"
+                integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU="
+                crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <h1>API crud</h1>
+        <h3>Load Data</h3>
 
-    <button onclick="loadData()">Load data</button>
-    <p id="result"></p>
+        <button onclick="loadData()">Load data</button>
+        <p id="result"></p>
 
-    <hr />
-    <h3>Add Data</h3>
+        <hr />
+        <h3>Add Data</h3>
 
-    <input id="productName" /> <br />
-    <input id="productPrice" /><br /><br />
+        <input id="productName" /> <br />
+        <input id="productPrice" /><br /><br />
 
-    <button onclick="addData()">Add Product</button>
-    <p id="resultAdd"></p>
+        <button onclick="addData()">Add Product</button>
+        <p id="resultAdd"></p>
 
-    <hr />
-    <h3>Delete Data</h3>
-    <input id="productIdForDelete" /> <br /><br />
+        <hr />
+        <h3>Delete Data</h3>
+        <input id="productIdForDelete" /> <br /><br />
 
-    <button onclick="deleteData()">Delete Product by ID</button>
-    <p id="resultDelete"></p>
-    <hr />
+        <button onclick="deleteData()">Delete Product by ID</button>
+        <p id="resultDelete"></p>
+        <hr />
 
-    <h3>Edit Data</h3>
-    <input id="productIdForEdit" onblur="loadDataById()" /> <br /><br />
-    <input id="productNameEdit" /> <br />
-    <input id="productPriceEdit" /><br /><br />
+        <h3>Edit Data</h3>
+        <input id="productIdForEdit" onblur="loadDataById()" /> <br /><br />
+        <input id="productNameEdit" /> <br />
+        <input id="productPriceEdit" /><br /><br />
     
-    <button onclick="updateData()">Update Product by ID</button>
-    <p id="resultUpdate"></p>
+        <button onclick="updateData()">Update Product by ID</button>
+        <p id="resultUpdate"></p>
 
-    <script>
+        <script>
 
-        const apiUrl = "https://localhost:44352/api/Products";
+            const apiUrl = "https://localhost:44352/api/Products";
 
-        function updateData() {
+            function updateData() {
 
-            var id = $("#productIdForEdit").val();
+                var id = $("#productIdForEdit").val();
 
-            var product = {
-                id: +$("#productIdForEdit").val(),
-                name: $("#productNameEdit").val(),
-                price: +$("#productPriceEdit").val()
-            };
+                var product = {
+                    id: +$("#productIdForEdit").val(),
+                    name: $("#productNameEdit").val(),
+                    price: +$("#productPriceEdit").val()
+                };
 
-            $.ajax({
-                type: "put",
-                url: apiUrl + "/" + id,
-                data: JSON.stringify(product),
-                contentType: "application/json; charset=utf-8",
-                success: function () {
-                    $("#resultUpdate")
-                        .html("<span style='color: green'>" +
-                            "Your Product has been changed successfully!</span>");
-                },
-                error: function (err) {
-                    $("#resultUpdate").html("Something wrong" + "<br>" + err);
-                    console.log(err);
-                    console.log(JSON.stringify(product));
-                }
-            });
-        }
-
-        function loadDataById() {
-            var id = $("#productIdForEdit").val();
-
-            $.ajax({
+                $.ajax({
+                    type: "put",
                     url: apiUrl + "/" + id,
-                    success: function (data) {
-                        $("#productNameEdit").val(data.name);
-                        $("#productPriceEdit").val(data.price);
+                    data: JSON.stringify(product),
+                    contentType: "application/json; charset=utf-8",
+                    success: function () {
+                        $("#resultUpdate")
+                            .html("<span style='color: green'>" +
+                                "Your Product has been changed successfully!</span>");
                     },
-                error: function () {
-                        $("#productNameEdit").val("");
-                        $("#productPriceEdit").val("");
-                        $("#resultUpdate").html("Not found");
+                    error: function (err) {
+                        $("#resultUpdate").html("Something wrong" + "<br>" + err);
+                        console.log(err);
+                        console.log(JSON.stringify(product));
                     }
-                }
-            );
-        }
+                });
+            }
 
-        function deleteData() {
+            function loadDataById() {
+                var id = $("#productIdForEdit").val();
 
-            var id = $("#productIdForDelete").val();
+                $.ajax({
+                        url: apiUrl + "/" + id,
+                        success: function (data) {
+                            $("#productNameEdit").val(data.name);
+                            $("#productPriceEdit").val(data.price);
+                        },
+                    error: function () {
+                            $("#productNameEdit").val("");
+                            $("#productPriceEdit").val("");
+                            $("#resultUpdate").html("Not found");
+                        }
+                    }
+                );
+            }
 
-            $.ajax({
-                type: "delete",
-                url: apiUrl + "/" + id,
-                success: function () {
-                    $("#resultDelete")
-                        .html("<span style='color: green'>" +
-                            "Your Product has been deleted successfully!</span>");
-                },
-                error: function (err) {
-                    $("#result").html("Something wrong" + err);
-                }
-            });
-        }
+            function deleteData() {
 
-        function addData() {
+                var id = $("#productIdForDelete").val();
 
-            let newProduct = {
-                "Name": $("#productName").val(),
-                "Price": +$("#productPrice").val()
-            };
-            // {"Name":"Test Add from html","Price":"1234.55"}
-            // console.log(JSON.stringify(newProduct));
+                $.ajax({
+                    type: "delete",
+                    url: apiUrl + "/" + id,
+                    success: function () {
+                        $("#resultDelete")
+                            .html("<span style='color: green'>" +
+                                "Your Product has been deleted successfully!</span>");
+                    },
+                    error: function (err) {
+                        $("#result").html("Something wrong" + err);
+                    }
+                });
+            }
 
-            $.ajax({
-                type: "post",
-                url: apiUrl,
-                data: JSON.stringify(newProduct),
-                contentType: "application/json; charset=utf-8",
-                success: function () {
-                    $("#resultAdd")
-                        .html("<span style='color: green'>Your Product has been added successfully!</span>");
-                },
-                error: function () {
-                    $("#result").html("Something wrong");
-                }
-            });
-        }
+            function addData() {
 
-        function loadData() {
+                let newProduct = {
+                    "Name": $("#productName").val(),
+                    "Price": +$("#productPrice").val()
+                };
+                // {"Name":"Test Add from html","Price":"1234.55"}
+                // console.log(JSON.stringify(newProduct));
 
-            $.ajax(
-                {
+                $.ajax({
+                    type: "post",
                     url: apiUrl,
-                    success: function (data) {
-                        let html = "";
-
-                        $.each(data, function (index, value) {
-                            html += value.id + ": " + value.name + " " + value.price + "<br>";
-                        });
-
-                        console.table(data);
-
-                        $("#result").html(html);
+                    data: JSON.stringify(newProduct),
+                    contentType: "application/json; charset=utf-8",
+                    success: function () {
+                        $("#resultAdd")
+                            .html("<span style='color: green'>Your Product has been added successfully!</span>");
                     },
                     error: function () {
                         $("#result").html("Something wrong");
                     }
-                }
-            );
-        }
-
-
-        function loadDataJavaScript() {
-
-            var xhttp = new XMLHttpRequest();
-
-            xhttp.onreadystatechange = function () {
-
-                if (this.readyState == 4 && this.status == 200) {
-                    document.getElementById("result").innerHTML = this.responseText;
-                }
+                });
             }
 
-            xhttp.open("GET", "https://localhost:44352/api/Orders", true);
-            xhttp.send();
+            function loadData() {
 
-        }
-    </script>
-</body>
-</html>
+                $.ajax(
+                    {
+                        url: apiUrl,
+                        success: function (data) {
+                            let html = "";
+
+                            $.each(data, function (index, value) {
+                                html += value.id + ": " + value.name + " " + value.price + "<br>";
+                            });
+
+                            console.table(data);
+
+                            $("#result").html(html);
+                        },
+                        error: function () {
+                            $("#result").html("Something wrong");
+                        }
+                    }
+                );
+            }
+
+
+            function loadDataJavaScript() {
+
+                var xhttp = new XMLHttpRequest();
+
+                xhttp.onreadystatechange = function () {
+
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.getElementById("result").innerHTML = this.responseText;
+                    }
+                }
+
+                xhttp.open("GET", "https://localhost:44352/api/Orders", true);
+                xhttp.send();
+
+            }
+        </script>
+    </body>
+    </html>

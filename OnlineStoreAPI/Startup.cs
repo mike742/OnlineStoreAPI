@@ -33,6 +33,13 @@ namespace OnlineStoreAPI
                     ServerVersion.Parse("8.0.24-mysql"))
                 );
 
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+
             services.AddSwaggerGen();
             services.AddControllers();
         }
@@ -53,7 +60,8 @@ namespace OnlineStoreAPI
             app.UseAuthorization();
             
             app.UseStaticFiles();
-            app.UseCors( e => e.WithOrigins("*") );
+
+            app.UseCors("MyPolicy");
 
             app.UseSwagger();
             app.UseSwaggerUI(

@@ -23,11 +23,89 @@
     <button onclick="addData()">Add Product</button>
     <p id="resultAdd"></p>
 
+    <hr />
+    <h3>Delete Data</h3>
+    <input id="productIdForDelete" /> <br /><br />
 
+    <button onclick="deleteData()">Delete Product by ID</button>
+    <p id="resultDelete"></p>
+    <hr />
+
+    <h3>Edit Data</h3>
+    <input id="productIdForEdit" onblur="loadDataById()" /> <br /><br />
+    <input id="productNameEdit" /> <br />
+    <input id="productPriceEdit" /><br /><br />
+    
+    <button onclick="updateData()">Update Product by ID</button>
+    <p id="resultUpdate"></p>
 
     <script>
 
         const apiUrl = "https://localhost:44352/api/Products";
+
+        function updateData() {
+
+            var id = $("#productIdForEdit").val();
+
+            var product = {
+                id: +$("#productIdForEdit").val(),
+                name: $("#productNameEdit").val(),
+                price: +$("#productPriceEdit").val()
+            };
+
+            $.ajax({
+                type: "put",
+                url: apiUrl + "/" + id,
+                data: JSON.stringify(product),
+                contentType: "application/json; charset=utf-8",
+                success: function () {
+                    $("#resultUpdate")
+                        .html("<span style='color: green'>" +
+                            "Your Product has been changed successfully!</span>");
+                },
+                error: function (err) {
+                    $("#resultUpdate").html("Something wrong" + "<br>" + err);
+                    console.log(err);
+                    console.log(JSON.stringify(product));
+                }
+            });
+        }
+
+        function loadDataById() {
+            var id = $("#productIdForEdit").val();
+
+            $.ajax({
+                    url: apiUrl + "/" + id,
+                    success: function (data) {
+                        $("#productNameEdit").val(data.name);
+                        $("#productPriceEdit").val(data.price);
+                    },
+                error: function () {
+                        $("#productNameEdit").val("");
+                        $("#productPriceEdit").val("");
+                        $("#resultUpdate").html("Not found");
+                    }
+                }
+            );
+        }
+
+        function deleteData() {
+
+            var id = $("#productIdForDelete").val();
+
+            $.ajax({
+                type: "delete",
+                url: apiUrl + "/" + id,
+                success: function () {
+                    $("#resultDelete")
+                        .html("<span style='color: green'>" +
+                            "Your Product has been deleted successfully!</span>");
+                },
+                error: function (err) {
+                    $("#result").html("Something wrong" + err);
+                }
+            });
+        }
 
         function addData() {
 
@@ -36,7 +114,7 @@
                 "Price": +$("#productPrice").val()
             };
             // {"Name":"Test Add from html","Price":"1234.55"}
-            console.log(JSON.stringify(newProduct));
+            // console.log(JSON.stringify(newProduct));
 
             $.ajax({
                 type: "post",
@@ -47,7 +125,7 @@
                     $("#resultAdd")
                         .html("<span style='color: green'>Your Product has been added successfully!</span>");
                 },
-                error: function() {
+                error: function () {
                     $("#result").html("Something wrong");
                 }
             });
@@ -64,6 +142,8 @@
                         $.each(data, function (index, value) {
                             html += value.id + ": " + value.name + " " + value.price + "<br>";
                         });
+
+                        console.table(data);
 
                         $("#result").html(html);
                     },
